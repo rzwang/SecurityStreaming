@@ -13,7 +13,7 @@ def determineRiskScore(picture):
   for i in range(0, len(classes)):
     ratios[classes[i]] = probabilities[i]
 
-  risk_factors = {"men":.3, "people":.2, "action":.5}
+  risk_factors = {"men":.2, "people":.2, "action":.3}
 
   risk_score = 0
 
