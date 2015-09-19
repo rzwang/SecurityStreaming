@@ -1,2 +1,6 @@
 .meteor/local
 .meteor/meteorite
+
+# Distribution / packaging #
+############################
+data/

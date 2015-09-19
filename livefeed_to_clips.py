@@ -11,13 +11,15 @@ capture = cv2.VideoCapture(VIDEO_FILENAME)
 
 clarifai_api = ClarifaiApi() # assumes environment variables are set.
 
+print capture
 
 while capture.isOpened():
   ret, frame = capture.read()
   cv2.imshow('frame', frame)
   if cv2.waitKey(1000) and 0xFF == ord('q'):
     break
-  result = clarifai_api.tag_images(open('/path/to/local/image.jpeg'))
+  result = clarifai_api.tag_images(frame)
+  print result
 
 
 
