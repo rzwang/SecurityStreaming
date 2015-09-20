@@ -5,22 +5,22 @@ if (Meteor.isClient) {
     callPolice: function () {
       var cursor = DangerScore.find().fetch();
       var score = cursor[0]["score"];
-      console.log(cursor[0]);
-      return score >= .75;
+      // return score >= .75;
+      return true;
     },
 
     checkSecurity: function () {
       var cursor = DangerScore.find().fetch();
       var score = cursor[0]["current"];
-      console.log(cursor[0]);
-      return (score >= .5 && score < .75);
+      // return (score >= .5 && score < .75);
+      return false;
     },
 
     allGood: function () {
       var cursor = DangerScore.find().fetch();
       var score = cursor[0]["current"];
-      console.log(cursor[0]);
-      return score < .5;
+      // return score < .5;
+      return false;
     }
 
   });
