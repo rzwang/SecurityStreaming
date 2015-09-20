@@ -3,15 +3,13 @@
 </head>
 
 <body>
-  <h1>Security Streaming</h1>
-
-  {{> messages}}
-
+<div class = "title">
+  Security Streaming
+</div>
+{{> messages}}
 </body>
 
 <template name="messages">
-  <p>{{text}}</p>
-
   {{#if callPolice}}
     {{> callPoliceTemplate}}
   {{/if}}
