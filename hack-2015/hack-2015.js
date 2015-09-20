@@ -27,7 +27,7 @@ if (Meteor.isClient) {
   setInterval(function(){
     var image = document.getElementById("refresher");
     image.src = "http://localhost:8000/public/temp.png?" + new Date().getTime();
-  }, 2000);
+  }, 500);
 }
 
 if (Meteor.isServer) {

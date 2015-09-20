@@ -13,16 +13,16 @@ body{
 
 #pics{
     position: absolute;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    text-align: center;
+    width: 100%;
+    top:50%;
 }
 .title{
     position: absolute;
     color: white;
     display:block;
     top: 5%;
-    bottom: 85%;
+    bottom: 80%;
     width: 100%;
     text-align: center;
     font-family: BebasNeue;
@@ -33,7 +33,7 @@ body{
     position:absolute;
     text-align: center;
     width:100%;
-    top:40%;
+    top:32%;
     font-family: BebasNeue;
     font-size: 4em;
     color: red;
@@ -43,7 +43,7 @@ body{
     position:absolute;
     text-align: center;
     width:100%;
-    top:40%;
+    top:32%;
     font-family: BebasNeue;
     font-size: 3em;
     color: #ff4c4c;
@@ -53,7 +53,7 @@ body{
     position:absolute;
     text-align: center;
     width:100%;
-    top:40%;
+    top:32%;
     font-family: BebasNeue;
     font-size: 3em;
 }
