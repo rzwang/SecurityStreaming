@@ -4,6 +4,7 @@ from PIL               import Image
 from pymongo           import MongoClient
 import matplotlib.pyplot as plt
 import numpy
+import gridfs
 import subprocess
 import time
 import sys
@@ -13,9 +14,10 @@ import os
 
 FFMPEG_BIN = "/usr/local/Cellar/ffmpeg/2.5.4/bin/ffmpeg"
 # FFMPEG_BIN = "C:\\ffmpeg\\bin\\ffmpeg.exe"
-DATA_PATH      = "data/"
+DATA_PATH      = "data"
+PICTURE_PATH   = "public"
 VIDEO_FILENAME = os.path.join(DATA_PATH, "3min_video.avi")
-IMAGE_FILEPATH = os.path.join(DATA_PATH, "temp.png")
+IMAGE_FILEPATH = os.path.join(PICTURE_PATH, "temp.png")
 
 FRAME_WIDTH  = 640
 FRAME_HEIGHT = 360
@@ -41,6 +43,8 @@ log = logging.getLogger(name = "pipeline")
 client = MongoClient('mongodb://127.0.0.1:3001/meteor')
 db = client.meteor
 danger_score_db = db.DangerScore
+fs = gridfs.GridFS(db)
+
 
 def image_data_to_file(image_data):
   image_data = image_data.reshape((FRAME_HEIGHT, FRAME_WIDTH, 3))
@@ -66,11 +70,15 @@ def determineRiskScore(result):
       risk_score += ratios[risk]*value
   return risk_score
 
-def update_database(risk_score):
+def update_database(risk_score, file_id):
+# def update_database(risk_score): 
   if danger_score_db.find().count() > 0:
     danger_score_db.update({"current":{"$exists":1}}, {"current":risk_score})
+    danger_score_db.update({"file_id":{"$exists":1}}, {"file_id":file_id})
   else:
     danger_score_db.insert({"current":risk_score})
+    danger_score_db.insert({"file_id":file_id})
+
 
 def run():
   number_of_frames_processed = 0
@@ -84,15 +92,17 @@ def run():
       image_data =  numpy.fromstring(raw_image, dtype='uint8')
       try:
         image_data_to_file(image_data)
+        file_id = fs.put(open(IMAGE_FILEPATH, 'rb'))
         result = clarifai_api.tag_images(open(IMAGE_FILEPATH, 'rb'))
 
         risk_score = determineRiskScore(result)
         log.info("Frame {} had result {} and score {}".format(number_of_frames_processed, result, risk_score))
 
-        update_database(risk_score)
+        update_database(risk_score, file_id)
+        # update_database(risk_score)
         log.info("Updated database with risk score")
       except Exception:
-        log.warning("Could not process image frame {}".format(number_of_frames_processed))
+        log.exception("Could not process image frame {}".format(number_of_frames_processed))
         break
     pipe.stdout.flush()
 
