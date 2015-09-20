@@ -8,11 +8,11 @@ import time
 import os
 
 
-VIDEO_FILENAME = "data/3min_video.avi"
+VIDEO_FILENAME = "../data/3min_video.avi"
 FRAME_WIDTH  = 640
 FRAME_HEIGHT = 360
 FFMPEG_BIN = "C:\\ffmpeg\\bin\\ffmpeg.exe"
-DATA_PATH      = "data/"
+DATA_PATH      = "../data/"
 IMAGE_FILEPATH = os.path.join(DATA_PATH, "temp.png")
 
 COMMAND = [ FFMPEG_BIN,
