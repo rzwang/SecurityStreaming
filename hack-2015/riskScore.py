@@ -1,10 +1,7 @@
 from clarifai.client import ClarifaiApi
 from pymongo import MongoClient
 
-def determineRiskScore(picture):
-  clarifai_api = ClarifaiApi("2Ocx2ZtBsi6zR_1FzFTLpafYICK5bRV0KhiA0fmQ", "xxsO3-1b9omh2wZ3JF1BrPe-IEuO0t5pFKgn3fs0") # assumes environment variables are set.
-  result = clarifai_api.tag_images(open(picture))
-
+def determineRiskScore(result):
   tags = result['results'][0]['result']['tag']
   classes = tags['classes']
   probabilities = tags['probs']
@@ -13,7 +10,7 @@ def determineRiskScore(picture):
   for i in range(0, len(classes)):
     ratios[classes[i]] = probabilities[i]
 
-  risk_factors = {"men":.2, "people":.2, "action":.3}
+  risk_factors = {"men":.2, "people":.2, "action":.3, "danger":.5, "gun":.8}
 
   risk_score = 0
 
