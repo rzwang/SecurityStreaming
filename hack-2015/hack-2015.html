@@ -3,10 +3,13 @@
 </head>
 
 <body>
-<div class = "title">
-  Security Streaming
-</div>
-{{> messages}}
+    <div class = "title">
+      Security Streaming
+    </div>
+
+    {{> messages}}
+
+    {{> image}}
 </body>
 
 <template name="messages">
@@ -21,4 +24,10 @@
   {{#if allGood}}
     {{> allGoodTemplate}}
   {{/if}}
+</template>
+
+<template name="image">
+    {{#if getImage}}
+        <img id="img" width="150" height="150"/>
+    {{/if}}
 </template>
