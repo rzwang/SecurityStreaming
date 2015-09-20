@@ -56,21 +56,12 @@ def determineRiskScore(result):
   return risk_score
 
 def update_database(risk_score):
-  if danger_score_db.find().count()>0:
+  if danger_score_db.find().count() > 0:
     danger_score_db.update({"current":{"$exists":1}}, {"current":risk_score})
+    print "yay"
   else:
     danger_score_db.insert({"current":risk_score})
-
-def process_image(raw_image):
-  image_data =  numpy.fromstring(raw_image, dtype='uint8')
-  try:
-    image_data_to_file(image_data)
-    result = clarifai_api.tag_images(open(IMAGE_FILEPATH, 'rb'))
-    risk_score = determineRiskScore(result)
-    update_database(risk_score)
-  except Exception as e:
-    print e
-    break
+    print "ugh"
 
 def run():
   number_of_frames_processed = 0
@@ -79,7 +70,17 @@ def run():
     number_of_frames_processed += 1
 
     if number_of_frames_processed % 25 == 0:
-      process_image(raw_image)
+      image_data =  numpy.fromstring(raw_image, dtype='uint8')
+      try:
+        image_data_to_file(image_data)
+        result = clarifai_api.tag_images(open(IMAGE_FILEPATH, 'rb'))
+        print "result: ", result
+        risk_score = determineRiskScore(result)
+        print "risk_score, ", risk_score
+        update_database(risk_score)
+      except Exception as e:
+        print e
+        break
     pipe.stdout.flush()
 
 if __name__ == '__main__':
