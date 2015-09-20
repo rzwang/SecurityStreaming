@@ -1,5 +1,5 @@
 from clarifai.client import ClarifaiApi
-
+from pymongo import MongoClient
 
 def determineRiskScore(picture):
   clarifai_api = ClarifaiApi("2Ocx2ZtBsi6zR_1FzFTLpafYICK5bRV0KhiA0fmQ", "xxsO3-1b9omh2wZ3JF1BrPe-IEuO0t5pFKgn3fs0") # assumes environment variables are set.
@@ -23,7 +23,15 @@ def determineRiskScore(picture):
 
   return risk_score
 
+if __name__ == '__main__':
+  risk_score =  determineRiskScore('guns.jpg')
 
-print determineRiskScore('guns.jpg')
+  client = MongoClient('mongodb://127.0.0.1:3001/meteor')
+  db = client.meteor
+  DangerScore = db.DangerScore
 
+  if DangerScore.find().count()>0:
+    DangerScore.update({"current":{"$exists":1}}, {"current":risk_score})
+  else:
+    DangerScore.insert({"current":risk_score})
 
