@@ -21,6 +21,7 @@ IMAGE_FILEPATH = os.path.join(PICTURE_PATH, "temp.png")
 
 FRAME_WIDTH  = 480
 FRAME_HEIGHT = 360
+EVERY_NTH_FRAME = 25
 
 COMMAND = [ FFMPEG_BIN,
             # '-ss', '00:00;00', #When to start reading the video file
@@ -50,8 +51,8 @@ def image_data_to_file(image_data):
   image_data = image_data.reshape((FRAME_HEIGHT, FRAME_WIDTH, 3))
   image_file = Image.fromarray(image_data)
   image_file.save(IMAGE_FILEPATH)
-  # plt.imshow(image_file)
-  # plt.show()
+  plt.imshow(image_file)
+  plt.show()
 
 def determineRiskScore(result):
   tags = result['results'][0]['result']['tag']
@@ -71,7 +72,7 @@ def determineRiskScore(result):
   return risk_score
 
 def update_database(risk_score, file_id):
-# def update_database(risk_score): 
+# def update_database(risk_score):
   if danger_score_db.find().count() > 0:
     danger_score_db.update({"current":{"$exists":1}}, {"current":risk_score})
     danger_score_db.update({"file_id":{"$exists":1}}, {"file_id":file_id})
@@ -86,7 +87,7 @@ def run():
     raw_image = pipe.stdout.read(FRAME_HEIGHT * FRAME_WIDTH * 3) #3 for pixels per byte
     number_of_frames_processed += 1
 
-    if number_of_frames_processed % 25 == 0:
+    if number_of_frames_processed % EVERY_NTH_FRAME == 0:
       log.info("Processed frame {}".format(number_of_frames_processed))
 
       image_data =  numpy.fromstring(raw_image, dtype='uint8')
@@ -102,7 +103,7 @@ def run():
         # update_database(risk_score)
         log.info("Updated database with risk score")
       except Exception:
-        log.exception("Could not process image frame {}".format(number_of_frames_processed))
+        log.warning("Could not process image frame {}".format(number_of_frames_processed))
         break
     pipe.stdout.flush()
 
