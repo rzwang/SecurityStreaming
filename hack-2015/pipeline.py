@@ -58,7 +58,7 @@ def determineRiskScore(result):
   for i in range(0, len(classes)):
     ratios[classes[i]] = probabilities[i]
 
-  risk_factors = {"men":.1, "people":.1, "action":.2, "danger":.5, "gun":.8, "risk": .3, "military":.3, "knife":.8, "blood":.3}
+  risk_factors = {"men":.1, "people":.1, "action":.2, "danger":.5, "handgun":.8, "machine gun":.8, "weapon":.8, "risk": .3, "military":.3, "knife":.8, "blood":.3}
 
   risk_score = 0 
 
