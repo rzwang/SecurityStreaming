@@ -16,10 +16,10 @@ FFMPEG_BIN = "/usr/local/Cellar/ffmpeg/2.5.4/bin/ffmpeg"
 # FFMPEG_BIN = "C:\\ffmpeg\\bin\\ffmpeg.exe"
 DATA_PATH      = "data"
 PICTURE_PATH   = "public"
-VIDEO_FILENAME = os.path.join(DATA_PATH, "gunfight_video.avi")
+VIDEO_FILENAME = os.path.join(DATA_PATH, "graphic_vid.avi")
 IMAGE_FILEPATH = os.path.join(PICTURE_PATH, "temp.png")
 
-FRAME_WIDTH  = 480
+FRAME_WIDTH  = 640
 FRAME_HEIGHT = 360
 EVERY_NTH_FRAME = 25
 
@@ -51,8 +51,8 @@ def image_data_to_file(image_data):
   image_data = image_data.reshape((FRAME_HEIGHT, FRAME_WIDTH, 3))
   image_file = Image.fromarray(image_data)
   image_file.save(IMAGE_FILEPATH)
-  plt.imshow(image_file)
-  plt.show()
+  # plt.imshow(image_file)
+  # plt.show()
 
 def determineRiskScore(result):
   tags = result['results'][0]['result']['tag']
@@ -63,7 +63,7 @@ def determineRiskScore(result):
   for i in range(0, len(classes)):
     ratios[classes[i]] = probabilities[i]
 
-  risk_factors = {"men":.1, "people":.1, "action":.2, "danger":.5, "handgun":.8, "machine gun":.8, "weapon":.8, "risk": .3, "military":.3, "knife":.8, "blood":.5, "gun":.8}
+  risk_factors = {"men":.1, "people":.1, "action":.3,"motion":.55, "danger":.5, "handgun":.8, "machine gun":.8, "weapon":.8, "risk": .3, "military":.3, "knife":.8, "blood":.5, "gun":.8, "sugery":1.0, "police":1.0, "hurry":.3}
 
   risk_score = 0
   for risk, value in risk_factors.items():
