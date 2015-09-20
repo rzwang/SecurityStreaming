@@ -5,14 +5,20 @@ from pymongo           import MongoClient
 import numpy
 import subprocess
 import time
+import sys
+import logging
 import os
 
 
 VIDEO_FILENAME = "3min_video.avi"
 FRAME_WIDTH  = 640
 FRAME_HEIGHT = 360
-# FFMPEG_BIN = "/usr/local/Cellar/ffmpeg/2.5.4/bin/ffmpeg"
+
 DATA_PATH      = ""
+FFMPEG_BIN = "/usr/local/Cellar/ffmpeg/2.5.4/bin/ffmpeg"
+
+# FFMPEG_BIN = "C:\\ffmpeg\\bin\\ffmpeg.exe"
+# DATA_PATH      = "data/"
 IMAGE_FILEPATH = os.path.join(DATA_PATH, "temp.png")
 
 COMMAND = [ FFMPEG_BIN,
@@ -27,6 +33,12 @@ pipe = subprocess.Popen(COMMAND,
                         bufsize=10**8)
 
 clarifai_api = clarifai_api = ClarifaiApi("2Ocx2ZtBsi6zR_1FzFTLpafYICK5bRV0KhiA0fmQ", "xxsO3-1b9omh2wZ3JF1BrPe-IEuO0t5pFKgn3fs0") # assumes environment variables are set.
+logging.basicConfig(
+  level  = logging.INFO,
+  format = "[%(asctime)s] [%(process)d] [%(name)s] [%(levelname)s] [%(funcName)s] [line: %(lineno)s] - %(message)s",
+  stream = sys.stdout
+)
+log = logging.getLogger(name = "pipeline")
 client = MongoClient('mongodb://127.0.0.1:3001/meteor')
 db = client.meteor
 danger_score_db = db.DangerScore
@@ -68,16 +80,20 @@ def run():
     number_of_frames_processed += 1
 
     if number_of_frames_processed % 25 == 0:
+      log.info("Processed frame {}".format(number_of_frames_processed))
+
       image_data =  numpy.fromstring(raw_image, dtype='uint8')
       try:
         image_data_to_file(image_data)
         result = clarifai_api.tag_images(open(IMAGE_FILEPATH, 'rb'))
-        print "result: ", result
+
         risk_score = determineRiskScore(result)
-        print "risk_score, ", risk_score
+        log.info("Frame {} had result {} and score {}".format(number_of_frames_processed, result, risk_score))
+
         update_database(risk_score)
-      except Exception as e:
-        print e
+        log.info("Updated database with risk score")
+      except Exception:
+        log.warning("Could not process image frame {}".format(number_of_frames_processed))
         break
     pipe.stdout.flush()
 
