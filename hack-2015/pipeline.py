@@ -16,10 +16,10 @@ FFMPEG_BIN = "/usr/local/Cellar/ffmpeg/2.5.4/bin/ffmpeg"
 # FFMPEG_BIN = "C:\\ffmpeg\\bin\\ffmpeg.exe"
 DATA_PATH      = "data"
 PICTURE_PATH   = "public"
-VIDEO_FILENAME = os.path.join(DATA_PATH, "3min_video.avi")
+VIDEO_FILENAME = os.path.join(DATA_PATH, "gunfight_video.avi")
 IMAGE_FILEPATH = os.path.join(PICTURE_PATH, "temp.png")
 
-FRAME_WIDTH  = 640
+FRAME_WIDTH  = 480
 FRAME_HEIGHT = 360
 
 COMMAND = [ FFMPEG_BIN,
@@ -62,7 +62,7 @@ def determineRiskScore(result):
   for i in range(0, len(classes)):
     ratios[classes[i]] = probabilities[i]
 
-  risk_factors = {"men":.1, "people":.1, "action":.2, "danger":.5, "handgun":.8, "machine gun":.8, "weapon":.8, "risk": .3, "military":.3, "knife":.8, "blood":.5}
+  risk_factors = {"men":.1, "people":.1, "action":.2, "danger":.5, "handgun":.8, "machine gun":.8, "weapon":.8, "risk": .3, "military":.3, "knife":.8, "blood":.5, "gun":.8}
 
   risk_score = 0
   for risk, value in risk_factors.items():
