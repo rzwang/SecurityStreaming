@@ -11,6 +11,12 @@ body{
     src: url("BEBAS___.TTF");
 }
 
+#pics{
+    position: absolute;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
 .title{
     position: absolute;
     color: white;
