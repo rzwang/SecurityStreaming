@@ -11,8 +11,8 @@ import logging
 import os
 
 
-# FFMPEG_BIN = "/usr/local/Cellar/ffmpeg/2.5.4/bin/ffmpeg"
-FFMPEG_BIN = "C:\\ffmpeg\\bin\\ffmpeg.exe"
+FFMPEG_BIN = "/usr/local/Cellar/ffmpeg/2.5.4/bin/ffmpeg"
+# FFMPEG_BIN = "C:\\ffmpeg\\bin\\ffmpeg.exe"
 DATA_PATH      = "data/"
 VIDEO_FILENAME = os.path.join(DATA_PATH, "3min_video.avi")
 IMAGE_FILEPATH = os.path.join(DATA_PATH, "temp.png")
@@ -46,8 +46,8 @@ def image_data_to_file(image_data):
   image_data = image_data.reshape((FRAME_HEIGHT, FRAME_WIDTH, 3))
   image_file = Image.fromarray(image_data)
   image_file.save(IMAGE_FILEPATH)
-  plt.imshow(image_file)
-  plt.show()
+  # plt.imshow(image_file)
+  # plt.show()
 
 def determineRiskScore(result):
   tags = result['results'][0]['result']['tag']
@@ -58,7 +58,7 @@ def determineRiskScore(result):
   for i in range(0, len(classes)):
     ratios[classes[i]] = probabilities[i]
 
-  risk_factors = {"men":.1, "people":.1, "action":.2, "danger":.5, "handgun":.8, "machine gun":.8, "weapon":.8, "risk": .3, "military":.3, "knife":.8, "blood":.3}
+  risk_factors = {"men":.1, "people":.1, "action":.2, "danger":.5, "handgun":.8, "machine gun":.8, "weapon":.8, "risk": .3, "military":.3, "knife":.8, "blood":.5}
 
   risk_score = 0
   for risk, value in risk_factors.items():
@@ -89,7 +89,7 @@ def run():
         risk_score = determineRiskScore(result)
         log.info("Frame {} had result {} and score {}".format(number_of_frames_processed, result, risk_score))
 
-        # update_database(risk_score)
+        update_database(risk_score)
         log.info("Updated database with risk score")
       except Exception:
         log.warning("Could not process image frame {}".format(number_of_frames_processed))

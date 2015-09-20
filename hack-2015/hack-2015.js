@@ -24,6 +24,10 @@ if (Meteor.isClient) {
     }
 
   });
+  setInterval(function(){
+    var image = document.getElementById("refresher");
+    image.src = "http://localhost:8000/temp.png?" + new Date().getTime();
+  }, 500);
 }
 
 if (Meteor.isServer) {
