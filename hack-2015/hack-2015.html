@@ -11,4 +11,16 @@
 
 <template name="messages">
   <p>{{text}}</p>
+
+  {{#if callPolice}}
+    {{> callPoliceTemplate}}
+  {{/if}}
+
+  {{#if checkSecurity}}
+    {{> checkSecurityTemplate}}
+  {{/if}}
+
+  {{#if allGood}}
+    {{> allGoodTemplate}}
+  {{/if}}
 </template>

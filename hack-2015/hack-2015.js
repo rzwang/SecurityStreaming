@@ -2,17 +2,23 @@ DangerScore = new Mongo.Collection("DangerScore");
 
 if (Meteor.isClient) {
   Template.messages.helpers({
-    text: function() {
-      cursor = DangerScore.find().fetch();
-      score = cursor[0]["score"];
-      if (score >= .75){
-        return "call police";
-      }
-      else if (score >= .5){
-        return "check security";
-      }
-      return "all good";
+    callPolice: function () {
+      var cursor = DangerScore.find().fetch();
+      var score = cursor[0]["current"];
+      return score >= .75;
     },
+
+    checkSecurity: function () {
+      var cursor = DangerScore.find().fetch();
+      var score = cursor[0]["current"];
+      return (score >= .5 && score < .75);
+    },
+
+    allGood: function () {
+      var cursor = DangerScore.find().fetch();
+      var score = cursor[0]["current"];
+      return score < .5;
+    }
 
   });
 }
