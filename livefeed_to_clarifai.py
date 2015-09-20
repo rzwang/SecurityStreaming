@@ -5,6 +5,7 @@ import numpy
 import subprocess
 import time
 import os
+from pymongo           import MongoClient
 
 
 VIDEO_FILENAME = "data/3min_video.avi"
@@ -26,6 +27,7 @@ pipe = subprocess.Popen(command,
                         stdout = subprocess.PIPE,
                         bufsize=10**8)
 list_of_results = []
+
 
 def image_data_to_file(image_data):
   image_data = image_data.reshape((FRAME_HEIGHT, FRAME_WIDTH, 3))
@@ -52,8 +54,37 @@ def run():
       process_image(raw_image)
     pipe.stdout.flush()
 
+def determineRiskScore(result):
+  tags = result['results'][0]['result']['tag']
+  classes = tags['classes']
+  probabilities = tags['probs']
+
+  ratios= {}
+  for i in range(0, len(classes)):
+    ratios[classes[i]] = probabilities[i]
+
+  risk_factors = {"men":.2, "people":.2, "action":.3, "danger":.5, "gun":.8}
+
+  risk_score = 0
+
+  for risk, value in risk_factors.items():
+    if risk in ratios:
+      risk_score += ratios[risk]*value
+
+  return risk_score
+
 if __name__ == '__main__':
+
+  client = MongoClient('mongodb://127.0.0.1:3001/meteor')
+  db = client.meteor
+  DangerScore = db.DangerScore
+
   run()
+
+  if DangerScore.find().count()>0:
+    DangerScore.update({"current":{"$exists":1}}, {"current":risk_score})
+  else:
+    DangerScore.insert({"current":risk_score})
 
 
 
